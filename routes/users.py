@@ -15,3 +15,4 @@ def init_user_routes(app):
         return data
 
     app.register_blueprint(user_route)
+    return app

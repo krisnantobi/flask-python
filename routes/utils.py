@@ -5,8 +5,8 @@ from flask import jsonify
 
 def json_response(fn):
     @wraps(fn)
-    def get_result():
-        result = fn()
-        response = jsonify(result)
+    def get_result(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        response = jsonify(result), 400
         return response
     return get_result

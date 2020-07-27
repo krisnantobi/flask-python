@@ -1,1 +1,1 @@
-hupper -m main
+hupper -x 'static templates' -m main
