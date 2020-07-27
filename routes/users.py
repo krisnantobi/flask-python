@@ -1,17 +1,17 @@
 from flask import Blueprint
 from flask.json import jsonify
-from app.oAuth import oAuth
+from app.controllers.HomeController  import HomeController
 from .utils import json_response
 
 
 def init_user_routes(app):
     user_route = Blueprint('user_route', __name__)
 
-    @json_response
     @user_route.route('/')
-    def hello_world():
-        oauth = oAuth(app.config)
-        data = oauth.user_oauth()
+    @json_response
+    def index():
+        controller = HomeController()
+        data = controller.index()
         return data
 
     app.register_blueprint(user_route)
