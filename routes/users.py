@@ -15,12 +15,5 @@ def init_user_routes(app):
         data = controller.index()
         return data
     
-    @app.route('/logout')
-    def logout():
-        print(list(session.keys()))
-        for key in list(session.keys()):
-            session.pop(key)
-        return redirect('/')
-
     app.register_blueprint(user_route)
     return app

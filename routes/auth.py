@@ -3,7 +3,7 @@ import token
 from flask import redirect, request, session, url_for
 from flask.blueprints import Blueprint
 from authlib.integrations.flask_client import OAuth
-
+from app.controllers.OAuthController import OAuthController as Controller
 
 def init_auth_routes(app):
     auth_route = Blueprint('auth_route', __name__)
@@ -35,6 +35,25 @@ def init_auth_routes(app):
         user_info = resp.json()
         session['profile'] = user_info
         session.permanent = True
+
+        return Controller.insert(
+            Controller,
+            data=__get_data(data=user_info)
+        )
+
+    @app.route('/logout')
+    def logout():
+        for key in list(session.keys()):
+            session.pop(key)
         return redirect('/')
 
     app.register_blueprint(auth_route)
+
+def __get_data(data: dict)->dict:
+    return {
+        'nick_name' : data.get('given_name', ''),
+        'email' : data.get('email', ''),
+        'full_name' : data.get('name'),
+        'last_name' : data.get('family_name'),
+        'avatar' : data.get('picture', '')
+    }
