@@ -4,6 +4,7 @@ from flask import redirect, request, session, url_for
 from flask.blueprints import Blueprint
 from authlib.integrations.flask_client import OAuth
 from app.controllers.OAuthController import OAuthController as Controller
+from .utils import login_not_required
 
 def init_auth_routes(app):
     auth_route = Blueprint('auth_route', __name__)
@@ -23,6 +24,7 @@ def init_auth_routes(app):
     )
 
     @auth_route.route('/login')
+    @login_not_required
     def login():
         redirect_uri = url_for('auth_route.authorize', _external=True)
         return oauth.google.authorize_redirect(redirect_uri)
@@ -30,22 +32,21 @@ def init_auth_routes(app):
     @auth_route.route('/authorize')
     def authorize():
         google = oauth.create_client('google')
-        google.authorize_access_token()
-        resp = google.get('userinfo')
-        user_info = resp.json()
-        session['profile'] = user_info
-        session.permanent = True
+        token = google.authorize_access_token()
+        usr = google.parse_id_token('ya29.a0AfH6SMCJlRv6-iB8632gJug1m2hE47G0Yj3EU6CJhJOGCjuVgnrSCZTq173yAVlNIcuFQo5l2-W0hLP9id6WVQB2yRovVt-9gTa5IJbkcCIQxmC7huHBgfktiW1Rur7WgezwS6zZ__GVl_slCG-y49RwFpfqnOBIHv4')
+        print(type(token))
+        # resp = google.get('userinfo')
+        # user_info = resp.json()
+        # session['profile'] = user_info
+        # session.permanent = True
 
-        return Controller.insert(
-            Controller,
-            data=__get_data(data=user_info)
-        )
+        return token, 200
 
     @app.route('/logout')
     def logout():
         for key in list(session.keys()):
             session.pop(key)
-        return redirect('/')
+        return redirect('/yuhu')
 
     app.register_blueprint(auth_route)
 

@@ -14,6 +14,25 @@ def init_user_routes(app):
         controller = HomeController()
         data = controller.index()
         return data
+
+    @user_route.route('/yuhu')
+    @json_response
+    def index1():
+        controller = HomeController()
+        data = controller.index()
+        return data
+
+    @user_route.route('/my-profile')
+    @login_required
+    @json_response
+    def profile():
+        controller = HomeController()
+        if check_key(session, 'profile'):
+            data = controller.get_by_email(
+                dict(session['profile']).get('email', '')
+            )
+            return data
+        return 'Failed', 400
     
     app.register_blueprint(user_route)
     return app

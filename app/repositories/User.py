@@ -8,3 +8,11 @@ class User(Base):
     )->Model:
         user = Model(**data)
         return user.save().reload()
+
+    def get_by_email(
+        self,
+        email: str
+    )->Model:
+        return Model.objects(email=email).first()
+
+

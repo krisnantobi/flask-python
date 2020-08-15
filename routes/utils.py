@@ -21,6 +21,16 @@ def login_required(fn):
             return redirect(url_for('auth_route.login', next=request.url))
     return get_result
 
+def login_not_required(fn):
+    @wraps(fn)
+    def get_result(*args, **kwargs):
+        result = fn(*args, **kwargs)
+        if check_key(session, 'profile'):
+            return redirect(url_for('user_route.profile'))
+        else:
+            return result
+    return get_result
+
 def check_key(dict, key):
     if key in dict.keys():
         return True
